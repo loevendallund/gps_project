@@ -1,0 +1,5 @@
+serial=3.5
+pyubx2=1.2.29
+gpiozero=1.6.2
+redis=5.0.0
+flask=2.3.3
