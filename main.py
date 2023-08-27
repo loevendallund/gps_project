@@ -4,14 +4,14 @@ from flask_redis import FlaskRedis
 import redis
 
 app = Flask(__name__)
-#redis = FlaskRedis(app)
-
 r = redis.Redis(host='localhost', decode_responses=True)
 
+# Main route to render index, shows a map and coordinates
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Api call to fetch the coordinates from redis
 @app.route('/api/coordinates', methods = ['GET'])
 def getCoords():
     lat = None
@@ -24,5 +24,5 @@ def getCoords():
     return jsonify({"lat": lat, "lng": lng})
 
 if __name__ == '__main__':
-    gps = GPSModule(redis_inst=r)
-    app.run(debug=True, host="0.0.0.0")
+    GPSModule(redis_inst=r)
+    app.run(host="0.0.0.0")
