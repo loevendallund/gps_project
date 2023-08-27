@@ -1,0 +1,71 @@
+<html>
+<head>
+	 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+   crossorigin=""/>
+	<style>
+	#map { height: 100%; }
+	ul {
+		text-align: left;
+		font-size: 12px;
+		float:right;
+		display: inline-block;
+		margin-top:auto;
+	}
+	</style>
+</head>
+<body onload="fetchData()">
+	<ul>
+		<button onclick="fetchData()">Get position</button>
+		<p>Lat: <span id="lat"></span> </p>
+		<p>Lon: <span id="lon"></span> </p>
+	</ul>
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+	<div id="map"></div>
+
+	<script>
+		let lat = null
+		let lon = null
+		var map = L.map('map');
+
+		var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		}).addTo(map);
+
+		var marker;
+
+		async function fetchData()
+		{
+			try
+			{
+				const response = await fetch("http://127.0.0.1:5000/api/coordinates");
+				const data = await response.json();
+				lat = data["lat"];
+				lon = data["lon"];
+				if (lat == null)
+				{
+					document.getElementById("lat").innerHTML = "INVALID";
+				} else {
+					document.getElementById("lat").innerHTML = lat;
+				}
+				if (lon == null)
+				{
+					document.getElementById("lon").innerHTML = "INVALID";
+				} else {
+					document.getElementById("lon").innerHTML = lon;
+				}
+
+				if (lat != null && lon != null)
+				{
+					map.setView([lat, lon], 17);
+					marker = L.marker([lat, lon]).addTo(map);
+				}
+			} catch (error) {
+				console.error("Failed fetching data from endpoint: " + error.message)
+			}
+		}
+	</script>
+
+</body>
+</html>
