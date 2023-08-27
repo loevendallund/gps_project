@@ -20,20 +20,20 @@
 		<p>Lat: <span id="lat"></span> </p>
 		<p>Lon: <span id="lon"></span> </p>
 	</ul>
-	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 	<div id="map"></div>
 
 	<script>
 		let lat = null
 		let lon = null
 		var map = L.map('map');
+		var marker = null;
 
 		var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 19,
 			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 		}).addTo(map);
 
-		var marker;
 
 		async function fetchData()
 		{
@@ -59,10 +59,22 @@
 				if (lat != null && lon != null)
 				{
 					map.setView([lat, lon], 17);
-					marker = L.marker([lat, lon]).addTo(map);
+					updateMarker();
 				}
 			} catch (error) {
 				console.error("Failed fetching data from endpoint: " + error.message)
+			}
+		}
+
+		function updateMarker()
+		{
+			if (marker == null)
+			{
+				marker = L.marker([lat, lon]).addTo(map);
+			}
+			else
+			{
+				marker.setLatLng([lat, lon]);
 			}
 		}
 	</script>
